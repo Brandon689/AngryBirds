@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project implements a secure, token-based authentication system for the AngryBirds API. It provides a robust foundation for user registration, login, and access control using JSON Web Tokens (JWT) and refresh tokens.
+This project implements a secure, token-based authentication system for an API. It provides a robust foundation for user registration, login, and access control using JSON Web Tokens (JWT) and refresh tokens.
 
 ## Key Features
 
