@@ -1,6 +1,10 @@
+using AngryBirds.API;
+using AngryBirds.AuthenticationLib.Configuration;
 using AngryBirds.AuthenticationLib.Exceptions;
 using AngryBirds.AuthenticationLib.Interfaces;
 using AngryBirds.AuthenticationLib.Models;
+using AngryBirds.AuthenticationLib.Services;
+using AuthenticationLib;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -9,6 +13,19 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenRevocationService, TokenRevocationService>();
+builder.Services.AddScoped<IUserRepository>(sp =>
+    new UserRepository(
+        "Data Source=users.db",
+        sp.GetRequiredService<IJwtService>()
+    )
+);
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddLogging();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -29,7 +46,6 @@ builder.Services.AddAuthorization();
 
 // Add your IUserRepository implementation here
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,8 +71,8 @@ app.MapPost("/register", async (HttpContext httpContext, RegisterModel model, IU
         var defaultPermissions = new[] { "basic_access" };
         var user = await userService.CreateUserAsync(model.Username, model.Password, defaultPermissions);
         var ipAddress = GetIpAddress(httpContext);
-        var (accessToken, refreshToken) = await userService.GenerateTokensAsync(user, ipAddress);
-        return Results.Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
+        var tokenResponse = await userService.GenerateTokensAsync(user, ipAddress);
+        return Results.Ok(tokenResponse);
     }
     catch (AuthenticationException ex)
     {
@@ -71,8 +87,21 @@ app.MapPost("/login", async (HttpContext httpContext, LoginModel model, IUserSer
         return Results.Unauthorized();
 
     var ipAddress = GetIpAddress(httpContext);
-    var (accessToken, refreshToken) = await userService.GenerateTokensAsync(user, ipAddress);
-    return Results.Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
+    var tokenResponse = await userService.GenerateTokensAsync(user, ipAddress);
+    return Results.Ok(tokenResponse);
+});
+
+app.MapPost("/refresh-token", async (RefreshTokenRequest request, IUserService userService) =>
+{
+    try
+    {
+        var tokenResponse = await userService.RefreshTokenAsync(request.AccessToken, request.RefreshToken);
+        return Results.Ok(tokenResponse);
+    }
+    catch (AuthenticationException ex)
+    {
+        return Results.Unauthorized();
+    }
 });
 
 string GetIpAddress(HttpContext context)
@@ -83,18 +112,6 @@ string GetIpAddress(HttpContext context)
         return context.Connection.RemoteIpAddress.MapToIPv4().ToString();
 }
 
-app.MapPost("/refresh-token", async (RefreshTokenRequest request, IUserService userService) =>
-{
-    try
-    {
-        var (accessToken, refreshToken) = await userService.RefreshTokenAsync(request.AccessToken, request.RefreshToken);
-        return Results.Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
-    }
-    catch (AuthenticationException ex)
-    {
-        return Results.Unauthorized();
-    }
-});
 
 app.MapPost("/revoke-token", [Authorize] async (HttpContext context, IUserService userService) =>
 {
@@ -124,5 +141,12 @@ app.MapGet("/user-permissions", [Authorize] async (string userId, IUserService u
     var permissions = await userService.GetUserPermissionsAsync(userId);
     return Results.Ok(permissions);
 }).RequireAuthorization("ViewPermissions");
+
+app.MapGet("/", () =>
+{
+    return Results.Ok("Hello World");
+});
+
+
 
 app.Run();

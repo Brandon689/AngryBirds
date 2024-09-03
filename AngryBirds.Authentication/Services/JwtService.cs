@@ -15,9 +15,10 @@ public class JwtService : IJwtService
     private readonly JwtOptions _options;
     private readonly ITokenRevocationService _revocationService;
 
-    public JwtService(IOptions<JwtOptions> options)
+    public JwtService(IOptions<JwtOptions> options, ITokenRevocationService revocationService)
     {
         _options = options.Value;
+        _revocationService = revocationService;
     }
 
     public async Task<string> GenerateAccessTokenAsync(string userId, IEnumerable<string> permissions)

@@ -20,7 +20,9 @@ public class Tests
             Audience = "test-audience",
             AccessTokenExpiration = TimeSpan.FromMinutes(15)
         });
-        var jwtService = new JwtService(options);
+        var inMemoryCache = new InMemoryDistributedCache();
+        var tokenRevocationService = new TokenRevocationService(inMemoryCache);
+        var jwtService = new JwtService(options, tokenRevocationService);
 
         // Act
         var token = await jwtService.GenerateAccessTokenAsync("testUserId", new[] { "read" });
@@ -41,7 +43,9 @@ public class Tests
             Audience = "test-audience",
             AccessTokenExpiration = TimeSpan.FromMinutes(15)
         });
-        var jwtService = new JwtService(options);
+        var inMemoryCache = new InMemoryDistributedCache();
+        var tokenRevocationService = new TokenRevocationService(inMemoryCache);
+        var jwtService = new JwtService(options, tokenRevocationService);
 
         // Act
         var refreshToken = await jwtService.GenerateRefreshTokenAsync();
@@ -151,7 +155,9 @@ public class Tests
             Audience = "test-audience",
             AccessTokenExpiration = TimeSpan.FromMinutes(15)
         });
-        var jwtService = new JwtService(options);
+        var inMemoryCache = new InMemoryDistributedCache();
+        var tokenRevocationService = new TokenRevocationService(inMemoryCache);
+        var jwtService = new JwtService(options, tokenRevocationService);
         var permissions = new[] { "read", "write" };
 
         // Act

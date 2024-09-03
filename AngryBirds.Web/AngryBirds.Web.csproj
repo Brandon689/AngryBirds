@@ -8,12 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AngryBirds.Password\AngryBirds.Password.csproj" />
     <ProjectReference Include="..\AngryBirds.Authentication\AngryBirds.Authentication.csproj" />
+    <ProjectReference Include="..\AngryBirds.Authorization\AngryBirds.Authorization.csproj" />
   </ItemGroup>
 
 </Project>

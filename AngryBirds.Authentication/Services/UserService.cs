@@ -55,7 +55,7 @@ public class UserService : IUserService
         return newUser;
     }
 
-    public async Task<(string AccessToken, string RefreshToken)> GenerateTokensAsync(User user, string ipAddress)
+    public async Task<TokenResponse> GenerateTokensAsync(User user, string ipAddress)
     {
         var permissions = await _userRepository.GetUserPermissionsAsync(user.Id);
         var accessToken = await _jwtService.GenerateAccessTokenAsync(user.Id, permissions);
@@ -71,10 +71,14 @@ public class UserService : IUserService
 
         await _userRepository.SaveRefreshTokenAsync(user.Id, refreshTokenEntity);
 
-        return (accessToken, refreshToken);
+        return new TokenResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
     }
 
-    public async Task<(string AccessToken, string RefreshToken)> RefreshTokenAsync(string accessToken, string refreshToken)
+    public async Task<TokenResponse> RefreshTokenAsync(string accessToken, string refreshToken)
     {
         var principal = await _jwtService.GetPrincipalFromExpiredTokenAsync(accessToken);
         var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -87,7 +91,12 @@ public class UserService : IUserService
             throw new AuthenticationException("Invalid refresh token");
         }
 
-        return await _userRepository.RotateRefreshTokenAsync(userId, refreshToken);
+        var newTokens = await _userRepository.RotateRefreshTokenAsync(userId, refreshToken);
+        return new TokenResponse
+        {
+            AccessToken = newTokens.NewAccessToken,
+            RefreshToken = newTokens.NewRefreshToken
+        };
     }
 
     public async Task RevokeRefreshTokenAsync(string userId, string refreshToken)

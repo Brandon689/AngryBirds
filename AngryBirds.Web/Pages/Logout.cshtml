@@ -1,0 +1,20 @@
+﻿@page
+@model AngryBirds.Web.Pages.LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.LogoutSuccessful)
+{
+    <div class="alert alert-success">
+        You have been successfully logged out.
+    </div>
+}
+
+<form method="post">
+    <button type="submit" class="btn btn-primary">Logout</button>
+</form>
+
+<a asp-page="/Index" class="btn btn-secondary mt-2">Return to Home</a>
