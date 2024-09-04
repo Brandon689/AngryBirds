@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 
 namespace AngryBirds.Authorization.Handlers;
+
 public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)

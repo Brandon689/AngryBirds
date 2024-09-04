@@ -1,10 +1,42 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "AngryBirds JWT Authentication";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="flex justify-center items-center min-h-[calc(100vh-200px)]">
+    <div class="w-full max-w-3xl">
+        <div class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+            <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Welcome to AngryBirds JWT Authentication</h1>
+            <p class="text-center text-gray-600 mb-6">
+                A robust and secure JWT-based authentication system for your web applications.
+            </p>
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700">How It Works:</h2>
+                <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                    <li>User registers or logs in with credentials</li>
+                    <li>Server validates credentials and generates JWT tokens</li>
+                    <li>Access token is used for authenticated requests</li>
+                    <li>Refresh token allows obtaining new access tokens</li>
+                    <li>Tokens are securely stored in HTTP-only cookies</li>
+                </ol>
+                <h2 class="text-2xl font-semibold text-gray-700 mt-6">Key Features:</h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <li>Secure JWT generation and validation</li>
+                    <li>Refresh token rotation for enhanced security</li>
+                    <li>Permission-based authorization</li>
+                    <li>Protection against common web vulnerabilities</li>
+                    <li>Easy integration with existing ASP.NET Core applications</li>
+                </ul>
+            </div>
+            <div class="flex justify-center mt-8">
+                <a href="/Login" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out mr-4">
+                    Login
+                </a>
+                <a href="/Register" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                    Register
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

@@ -4,6 +4,7 @@ using AngryBirds.AuthenticationLib.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AuthenticationLib;
+
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, Action<JwtOptions> configureOptions)

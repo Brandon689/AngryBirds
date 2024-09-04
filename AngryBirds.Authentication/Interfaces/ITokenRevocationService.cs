@@ -1,4 +1,5 @@
 ﻿namespace AngryBirds.AuthenticationLib.Interfaces;
+
 public interface ITokenRevocationService
 {
     Task RevokeTokenAsync(string token);

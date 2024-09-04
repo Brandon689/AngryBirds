@@ -4,21 +4,23 @@
     ViewData["Title"] = "Protected Data";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-3xl font-bold mb-6">@ViewData["Title"]</h1>
 
 @if (!string.IsNullOrEmpty(Model.ProtectedMessage))
 {
-    <div class="alert alert-success">
-        <p>@Model.ProtectedMessage</p>
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <p class="block sm:inline">@Model.ProtectedMessage</p>
     </div>
 }
 else if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
-    <div class="alert alert-danger">
-        <p>@Model.ErrorMessage</p>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <p class="block sm:inline">@Model.ErrorMessage</p>
     </div>
 }
 
-<form method="post">
-    <button type="submit" class="btn btn-primary" asp-page-handler="FetchData">Fetch Protected Data</button>
+<form method="post" class="mt-4">
+    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" asp-page-handler="FetchData">
+        Fetch Protected Data
+    </button>
 </form>

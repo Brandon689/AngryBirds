@@ -2,6 +2,7 @@
 using AuthenticationLib;
 
 namespace AngryBirds.AuthenticationLib.Interfaces;
+
 public interface IUserRepository
 {
     Task<User> GetByIdAsync(string id);
